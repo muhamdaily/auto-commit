@@ -1,0 +1,51 @@
+name: Auto commit
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: "0 0-9 * * *"
+
+jobs:
+  auto_commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: DEBUG 
+        run: echo "::debug::Ref = ${{github.ref}}"
+      - uses: actions/checkout@v3      
+        with:
+         persist-credentials: false
+         fetch-depth: 0
+
+      - name: Modify last update
+        run: |
+          d=`date '+%Y-%m-%dT%H:%M:%SZ'`
+          echo $d > LAST_UPDATED
+          
+      - name: Commit changes
+        run: |
+          git config --local user.email "muhampedia.id@gmail.com"
+          git config --local user.name "muhamdaily"
+          git add -A
+          
+          arr[0]="feat: updated latest data"
+          arr[1]="chore: automated update for files"
+          arr[2]="fix: minor adjustment in configuration"
+          arr[3]="refactor: improved file structure"
+          arr[4]="style: fixed file formatting"
+          arr[5]="docs: updated last updated timestamp"
+          arr[6]="perf: performance improvement in updates"
+          arr[7]="ci: automated commit for synchronization"
+          arr[8]="test: periodic update execution"
+          arr[9]="build: routine auto commit for updates"
+          
+          rand=$[$RANDOM % ${#arr[@]}]
+          
+          git commit -m "${arr[$rand]}"
+          
+      - name: GitHub Push
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          directory: "."
+          github_token: ${{ secrets.GITHUB_TOKEN }}
