@@ -44,8 +44,14 @@ jobs:
           
           git commit -m "${arr[$rand]}"
           
+      - name: GitHub Pull
+        run: |
+          git pull origin master --rebase
+
       - name: GitHub Push
         uses: ad-m/github-push-action@v0.6.0
         with:
           directory: "."
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: master
+          force: true
